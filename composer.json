@@ -1,0 +1,23 @@
+{
+	"name" : "mouf/root-container",
+	"description" : "This package contains a PHP DI container detector and aggregator. The idea is to have potentially one DI container per composer package and to aggregate all those containers into a 'root' container.",
+	"type" : "composer-installer",
+	"homepage" : "http://mouf-php.com",
+	"keywords" : [
+		"ContainerInterop",
+		"DI"
+	],
+	"require": {
+		"php": ">=5.3",
+		"container-interop/container-interop": "~1.0",
+		"acclimate/container": "~1.0"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Mouf\\RootContainer\\" : "src"
+		}
+	},
+	"extra" : {
+		"class" : "Mouf\\RootContainer\\Installer"
+	}
+}

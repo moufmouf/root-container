@@ -64,7 +64,7 @@ class Installer extends LibraryInstaller
         $io = $event->getIO();
         $io->write('<info>Compiling containers list</info>');
 
-        $packages = $this->getPackagesList($composer);
+        $packages = self::getPackagesList($composer);
         
         $factoryList = array();
         
@@ -94,7 +94,7 @@ class Installer extends LibraryInstaller
      * @param Composer $composer
      * @return PackageInterface[]
      */
-    protected function getPackagesList(Composer $composer)
+    protected static function getPackagesList(Composer $composer)
     {
     	// Get the available packages.
     	$allPackages = array();

@@ -22,7 +22,8 @@ class RootContainerFactory {
 		if (!self::$rootContainer) {
 			self::$rootContainer = new CompositeContainer();
 			
-			require '../../../containers.php';
+			$rootContainer = self::$rootContainer;
+			require __DIR__.'/../../../containers.php';
 		}
 		return self::$rootContainer;
 	}

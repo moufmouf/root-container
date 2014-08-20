@@ -32,6 +32,8 @@ by @mnapoli is also taking the same route (although its scope is larger).
 How to create a package with an integrated DI container
 =======================================================
 
+This is the nice part: it is easy!
+
 In your *composer.json* file, add an "extra" session like this one:
 
 ```json
@@ -79,11 +81,45 @@ PimpleInterop is a modified version of Pimple 1 that adds compatibility with the
 to delegate dependencies fetching to the $rootContainer. For instance, `PimpleInterop` can delegate dependencies fetching if
 you pass another container as the first argument of the constructor.
 
-How to use the root container
-=============================
+Note: your package does not have to require the `mouf/root-container` package. This is sweet because if 
+other container aggregators follow the same convention (referencing factory code in `composer.json` extra section),
+there can easily be many different implementations of a root-container (maybe one per framework). 
 
-TODO
+How to use the root container in your project?
+==============================================
 
+First of all, you have to use packages that have integrated DI containers (see previous chapter).
+
+All you have to do is to include the root-container Composer package in your project:
+
+**composer.json**
+```json
+{
+	"require" : {
+		"mouf/root-container" : "dev-master"
+	},
+	"repositories" : [{
+		"type" : "git",
+		"url" : "git@github.com:moufmouf/root-container.git"
+	}]
+}
+```
+
+Getting an instance of the root container is easy:
+
+```php
+use Mouf\RootContainer;
+
+$container = RootContainerFactory::get();
+$myEntry = $container->get('myEntry');
+```
+
+"Hey, but you are using a static method to get the RootContainer instance! Static methods are evil!"
+
+Mmmm... yeah, of course. But containers are constructed using static methods anyway! So it is not that bad.
+The real problem is that the RootContainer is accessible from anywhere in the code (since it is exposed statically).
+If this is an issue, do not use RootContainer. Instead, write your own RootContainer implementation
+that fits the framework you are using.
 
 Testing
 =======
@@ -100,3 +136,20 @@ php composer.phar install
 # Run the tests
 vendor/bin/phpunit
 ```
+
+This test project requires 2 subprojects ([A](https://github.com/moufmouf/root-container-test-subprojectA) and 
+[B](https://github.com/moufmouf/root-container-test-subprojectB)).
+Both subprojects are providing custom DI containers [through their `composer.json` file](https://github.com/moufmouf/root-container-test-subprojectA/blob/master/composer.json).
+The DI containers are provided by [PimpleInterop](https://github.com/moufmouf/root-container-test-subprojectB/blob/master/src/Acme/ProjectB/Factory.php),
+an extended version of Pimple that supports the ContainerInterop standard.
+
+About performance
+=================
+
+The current implementation of RootContainer is relying on the Acclimate's CompositeContainer. It is 
+a proof-of-concept and no effort has been done performance-wise.
+The more container you have in your application, the lower the performance should be (linearly).
+
+It does not mean however that performance cannot be improved. There are many possible strategies to improve performance,
+like building a map of all entries associated to their respective container. This is going further than
+the current scope of this project.

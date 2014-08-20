@@ -29,3 +29,74 @@ About other projects
 This is not the only project working on the "one container per package" paradigm. The [FrameworkInterop project](https://github.com/mnapoli/framework-interop)
 by @mnapoli is also taking the same route (although its scope is larger).
 
+How to create a package with an integrated DI container
+=======================================================
+
+In your *composer.json* file, add an "extra" session like this one:
+
+```json
+{
+	"extra": {
+		"container-interop": {
+			"container-factory": "My\\Factory::getContainer"
+		}
+	}
+}
+```
+
+The "container-factory" parameter must point to a function or a static method that returns the container.
+
+Here is a sample implementation:
+
+```php
+class ContainerFactory {
+	private static $container;
+
+	/**
+	 * This method is returning a configured container
+	 *
+	 * @param ContainerInterface $rootContainer
+	 * @return ContainerInterface
+	 */
+	public static function getContainer(ContainerInterface $rootContainer) {
+		if (!$this->container) {
+			// Delegate dependencies fetching to the root container.
+			$this->container = new PimpleInterop($rootContainer);
+			$this->container['hello'] = $this->container->share(function(ContainerInterface $container) {
+				return array('hello' => $container->get('world'));
+			}); 
+		}
+		return $this->container;
+	}
+}
+```
+
+A quick note about this code: we are providing a [PimpleInterop container](https://github.com/moufmouf/pimple-interop).
+PimpleInterop is a modified version of Pimple 1 that adds compatibility with the [ContainerInterop](https://github.com/container-interop/container-interop/) project.
+
+**Important**: the factory takes one compulsory parameter: the `$rootContainer`. If some entries in your container are containing
+*external dependencies* (dependencies that are not part of the container), then your container needs to be able
+to delegate dependencies fetching to the $rootContainer. For instance, `PimpleInterop` can delegate dependencies fetching if
+you pass another container as the first argument of the constructor.
+
+How to use the root container
+=============================
+
+TODO
+
+
+Testing
+=======
+
+The [root-container-test-project on GitHub](https://github.com/moufmouf/root-container-test-project) provides
+a nice playground to see how the root-container behaves.
+
+```
+# Download the project
+git clone https://github.com/moufmouf/root-container-test-project.git
+cd root-container-test-project
+# Install dependencies (this will also compile the root-container)
+php composer.phar install
+# Run the tests
+vendor/bin/phpunit
+```

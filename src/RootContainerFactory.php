@@ -2,6 +2,8 @@
 namespace Mouf\RootContainer;
 
 use Acclimate\Container\CompositeContainer;
+use Interop\Container\ContainerInterface;
+
 /**
  * Factory in charge of creating an instance of the root container.
  * 
@@ -9,9 +11,19 @@ use Acclimate\Container\CompositeContainer;
  */
 class RootContainerFactory {
 	
+	private static $rootContainer;
+	
+	/**
+	 * Returns a container aggregating all the containers of the application.
+	 * 
+	 * @return ContainerInterface
+	 */
 	public static function get() {
-		$rootContainer = new CompositeContainer();
-		
-		require '../../../containers.php';
+		if (!self::$rootContainer) {
+			self::$rootContainer = new CompositeContainer();
+			
+			require '../../../containers.php';
+		}
+		return self::$rootContainer;
 	}
 }

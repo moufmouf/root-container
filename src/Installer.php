@@ -83,7 +83,7 @@ class Installer extends LibraryInstaller
 	        $fp = fopen("vendor/containers.php", "w");
 	        fwrite($fp, "<?php\n");
 	        foreach ($factoryList as $factory) {
-	        	fwrite($fp, "\$rootContainer->addContainer(".$factory."(\$rootContainer));");
+	        	fwrite($fp, "\$rootContainer->addContainer(".$factory."(\$rootContainer));\n");
 	        }
         }
     }

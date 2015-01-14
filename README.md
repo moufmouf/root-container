@@ -40,7 +40,7 @@ In your *composer.json* file, add an "extra" session like this one:
 {
 	"extra": {
 		"container-interop": {
-			"container-factory": "My\\Factory::getContainer"
+			"container-factory": "My\\ContainerFactory::getContainer"
 		}
 	}
 }

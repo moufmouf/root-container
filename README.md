@@ -3,6 +3,8 @@ About RootContainer
 
 This project is a test project developed as a proof of concept while working on the [ContainerInterop](https://github.com/container-interop/container-interop/) project.
 
+###This package was the precursor of [Container-Installer](https://github.com/thecodingmachine/container-installer) and [Root-Container](https://github.com/thecodingmachine/root-container) and can now be considered as abandonned and replaced by those 2 packages.
+
 The goal of this project is to create a "root container", that can automatically detect and add containers contained
 in other packages into a global composite container that can be used by the application.
 
